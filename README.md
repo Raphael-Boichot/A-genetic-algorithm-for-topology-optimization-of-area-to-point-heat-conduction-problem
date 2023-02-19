@@ -27,3 +27,7 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 
 # Various shapes at convergence for kp/k0=10
 ![converged shapes](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Converged_shapes.png)
+
+# Epilogue
+
+It has been proved since that global optima for this problem are fibrous non branches topologies (which is rather intuitive, branching always increases thermal resistance as the shortest path to the heat sink is to not pass by a branch). However in terms of thermal performances, the sub-optimal topologies found by this code are very close to the global optimum. Due to there discrete aspect, they are moreover easier to fabricate.
