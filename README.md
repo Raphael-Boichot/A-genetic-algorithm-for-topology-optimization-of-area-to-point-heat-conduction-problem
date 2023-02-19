@@ -30,4 +30,4 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 
 # Epilogue
 
-It has been proven by a Chinese team since that global optima for this problem are fibrous non branches topologies (which is rather intuitive, branching always increases thermal resistance as the shortest path to the heat sink is to not pass by a branch). However in terms of thermal performances, the sub-optimal topologies found by this code are very close to the global optimum. Due to there discrete aspect, they are moreover easier to fabricate.
+It has been proven by a Chinese team since that global optima for this problem are fibrous non branches topologies (which is rather intuitive, branching always increases thermal resistance as the shortest path to the heat sink is to not pass by a branch). However in terms of thermal performances, the sub-optimal topologies found by this code are very close to the global optimum. Due to there discrete aspect, they are moreover easier to fabricate. Anyway, I was beaten by people clever than me !
