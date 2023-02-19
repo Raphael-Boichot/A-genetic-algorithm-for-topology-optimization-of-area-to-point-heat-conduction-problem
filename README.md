@@ -17,7 +17,7 @@ The code can natively minimize:
 - (6) the standard deviation of temperatures along the adiabatic border of the domain;
 - (7) the average temperature;
 
-Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intuitively, minimizing entropy (3) over the domain gives very poorly performing shapes as the definition of entropy favored high temperatures to decrease entropy. Objective functions (4) and (5) gives very artitic shapes. The codes also leads to non intuitive (but optimal) situations where the conductive matter is repulsed from the heatsink if it is not conductive enough.
+Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intuitively, minimizing entropy (3) over the domain gives very poorly performing shapes as the definition of entropy favored high temperatures to decrease entropy. Objective functions (4) and (5) gives very artistic shapes. The codes also leads to non intuitive (but optimal) situations where the conductive matter is repulsed from the heatsink if it is not conductive enough.
 
 # Test case
 ![test case](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Test_case.png)
