@@ -66,7 +66,7 @@ end;
 
 population=zeros(hauteur, largeur,taille_pop);
 nombre_pixels_conducteurs=ceil(pixels_blancs*taux_remplissage);
-disp('Création de la population initiale');
+disp('Creating the initial population frow scratch...');
 tic
 parfor i=1:1:taille_pop;
         population(:,:,i)=init_image(conditi_limites_ini,nombre_pixels_conducteurs, k0, kp_k0);
@@ -83,13 +83,12 @@ tic
 prob_mutation=probabilite_mutation_maximale*exp(-5.8*g/nb_generations);
 
     %évaluation des images
-disp('Début d''évaluation de la population');
+disp('Calculating fitness for each individual...');
 % ordre des variables : variance, moyenne, temperature_max, map
 % températures, map gradients, variance gradients
 parfor i=1:1:taille_pop;
    [distance,somme_entropie, entropie, variance_border,variance, moyenne,fitness(i,g), temp, grad,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,pas_x,p,population(:,:,i));
 end;
-disp('Fin d''évaluation de la population');
 
 %récupération des dix meilleures images
 temp_temp=[(1:1:taille_pop)',fitness(:,g)];
@@ -108,11 +107,10 @@ nouvelle_population(:,:,1)=population(:,:,indice(1));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %On croise les meilleurs parents pour faire taille_pop-1 enfants
-disp('Début du croisement/mutation');
+disp('Applying the mutation/crossover algorithm...');
 parfor m=2:1:(taille_pop)
 [nouvelle_population(:,:,m),table(m,:)]=gene_enfant(population,kp_k0,k0, nombre_pixels_conducteurs, prob_mutation, prob_croisement, meilleurs,indice);
 end;
-disp('Fin du croisement/mutation');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %écriture meilleure image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -183,15 +181,12 @@ imwrite([miroir_mean2,miroir_mean],'Z_Image_moyenne.png');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clc;
-disp(['Ecriture du fichier Image_' num2str(g) '.png']);
-disp(['Ecriture du fichier Image_moyenne_' num2str(g) '.png']);
-disp(['Nombre de pixels conducteurs : ', num2str(nombre_pixels_conducteurs), ' Somme de contrôle : ', num2str(somme_controle)]);
-disp(['Probabilité de mutation maximale en cours : ', num2str(prob_mutation)]);
-disp(['Dernière probabilité de croisement : ', num2str(opti_p_crois), ' Dernière probabilité de mutation : ', num2str(opti_p_mut)]);
-disp(['Fonction objectif en cours : ', num2str(fitness(1,g))]);
-disp(['sauvegarde mémoire courante...']);
+disp(['Writing files Image_' num2str(g) '.png and Image_moyenne_' num2str(g) '.png']);
+disp(['Sum of conductive cells : ', num2str(nombre_pixels_conducteurs), ' must be equal to : ', num2str(somme_controle)]);
+disp(['Current maximal mutation probability : ', num2str(prob_mutation)]);
+disp(['Last successfull - crossover rate : ', num2str(opti_p_crois), ' / mutation rate : ', num2str(opti_p_mut)]);
+disp(['Best fitness : ', num2str(fitness(1,g))]);
 save Etat_courant.mat
-disp(['Temps de calcul']);
 toc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,23 +202,23 @@ if g>1;
 residus(1,g-1) = (fitness(1,g-1)-fitness(1,g))/norme_iteration_1;
 subplot(2,4,1);
 plot(log10(residus), '.r');
-title('Résidus');
-xlabel('Génération');
-ylabel('log10 valeur');
+title('Residuals');
+xlabel('Generation');
+ylabel('log10 value');
 end;
 
 subplot(2,4,2);
 imagesc(best_image);
-title('Meilleure géométrie');
+title('Best topology');
 
 subplot(2,4,3);
 imagesc(image_moyenne);
-title('Géométrie');
+title('Average topology');
 
 subplot(2,4,4);
 [distance,somme_entropie, entropie, border_variance, variance, moyenne,t_max,temp_affichage, grad, variance_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,pas_x,p,population(:,:,1));
 imagesc(temp_affichage);
-title('Température');
+title('Objective function');
 colormap hot
 
 P_1(g,1)=opti_p_crois;
@@ -232,26 +227,26 @@ P_1(g,3)=prob_mutation;
 
 subplot(2,4,5);
 plot(P_1(:,1), '.b');
-title('Probabilité Croisement');
-xlabel('Génération');
-ylabel('Valeur');
+title('Mutation rate');
+xlabel('Generation');
+ylabel('Value');
 
 subplot(2,4,6);
 plot(log10(P_1(:,2)), '.b')
 hold on
 plot(log10(P_1(:,3)), '.r');
 hold off
-title('log10 Probabilité Mutation');
-xlabel('Génération');
+title('log10 mutation rate');
+xlabel('Generation');
 
 subplot(2,4,7);
 imagesc(log10(entropie(2:end-1,2:end-1)));
-title('Log10 Entropie');
+title('Log10 Entropy');
 colormap hot
 
 subplot(2,4,8);
 imagesc(grad);
-title('Gradients');
+title('Thermal gradients');
 colormap hot
 
 pause(0.01);
