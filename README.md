@@ -19,15 +19,15 @@ The code can natively minimize:
 
 Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intuitively, minimizing entropy (3) over the domain gives very poorly performing shapes as the definition of entropy favored high temperatures to decrease entropy. Objective functions (4) and (5) gives very artistic shapes. The codes also leads to non intuitive (but optimal) situations where the conductive matter is repulsed from the heatsink if it is not conductive enough.
 
-# Test case
+## Test case
 ![test case](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Test_case.png)
 
-# Code output during convergence
+## Code output during convergence
 ![code output](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Code_Output.png)
 
-# Various shapes at convergence for kp/k0=10
+## Various shapes at convergence for kp/k0=10
 ![converged shapes](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Converged_shapes.png)
 
-# Epilogue
+## Epilogue
 
 It has been proven by some brilliant team since that [global optima for this problem are fibrous non branched topologies](https://doi.org/10.1016/j.ijheatmasstransfer.2018.01.114) with infinite complexity (which is rather intuitive, branching always increases thermal resistance as the shortest path to the heat sink is to not pass by a branch). However in terms of thermal performances, the sub-optimal topologies found by this code are very close to the global optimum. Due to their discrete aspect, they are moreover easier to fabricate. Anyway, I was beaten by people much more clever than me !
