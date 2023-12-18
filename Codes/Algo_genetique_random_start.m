@@ -4,12 +4,12 @@ clear;
 
 %---------Conditions for thermal science-----------------------------------
 k0=1;
-kp_k0=25;
+kp_k0=10;
 p=1e6;
 pas_x=0.001;
 T_ref=298;
 taux_remplissage=0.3;
-imname='25x50.bmp';
+imname='50x100.bmp';
 %--------------------------------------------------------------------------
 
 %--------Hyper parameters for genetic algorithm----------------------------
@@ -22,8 +22,8 @@ probabilite_mutation_maximale=0.1;
 
 rng('shuffle', 'twister')
 mkdir('Figure');
-mkdir('Best_image');
-mkdir('Average_image');
+mkdir('Best_topology');
+mkdir('Average_topology');
 
 %Initialisation variables d'affichage
 T_comp=0;
@@ -71,6 +71,7 @@ tic
 parfor i=1:1:taille_pop;
     population(:,:,i)=init_image(conditi_limites_ini,nombre_pixels_conducteurs, k0, kp_k0);
 end;
+topology_history=zeros(hauteur, largeur, nb_generations);
 toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Evaluation et classement population
@@ -79,6 +80,7 @@ toc
 
 for g=1:1:nb_generations
     tic
+    
     %calcul probabilité de mutation décroissante avec le calcul
     prob_mutation=probabilite_mutation_maximale*exp(-5.8*g/nb_generations);
     
@@ -101,6 +103,7 @@ for g=1:1:nb_generations
     
     %On garde le meilleur inchangé systématiquement
     nouvelle_population(:,:,1)=population(:,:,indice(1));
+    topology_history(:,:,g)=population(:,:,indice(1));
     %On garde les paramètres du GA correpondant au meilleur enfant
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,8 +118,8 @@ for g=1:1:nb_generations
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %écriture meilleure image
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
     meilleure_image=nouvelle_population(:,:,1);
+    
     best_image=zeros(hauteur,largeur,3);
     image_moyenne=zeros(hauteur,largeur,3);
     
@@ -173,23 +176,29 @@ for g=1:1:nb_generations
     miroir_mean=fliplr(image_moyenne(1:hauteur,1:largeur-1,:));
     miroir_mean2=fliplr(miroir_mean);
     
-    % imwrite([miroir_best2,miroir_best],['Meilleure image\Z_Image_' num2str(g) '.png']);
-    % imwrite([miroir_mean2,miroir_mean],['Moyenne image\Z_Image_moyenne_' num2str(g) '.png']);
-    imwrite([miroir_best2,miroir_best],'Image_fitness.png');
-    imwrite([miroir_mean2,miroir_mean],'Image_moyenne.png');
-    imwrite([miroir_best2,miroir_best],['Best_image\Image_fitness_',num2str(g,'%06.f'),'.png']);
-    imwrite([miroir_mean2,miroir_mean],['Average_image\Image_moyenne_',num2str(g,'%06.f'),'.png']);
+    if g==1;
+        imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+    end
+    if (g>1);
+        if not(sum(abs(sum(topology_history(:,:,g)-topology_history(:,:,g-1)))))==0;
+            imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+        end
+    end
+    
+    imwrite([miroir_best2,miroir_best],'Best_topology.png');
+    imwrite([miroir_mean2,miroir_mean],'Average_topology.png');
+    imwrite([miroir_mean2,miroir_mean],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %affichage console
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     clc;
-    disp(['Writing files Image_' num2str(g) '.png and Image_moyenne_' num2str(g) '.png']);
-    disp(['Sum of conductive cells : ', num2str(nombre_pixels_conducteurs), ' must be equal to : ', num2str(somme_controle)]);
-    disp(['Current maximal mutation probability : ', num2str(prob_mutation)]);
-    disp(['Last successfull - crossover rate : ', num2str(opti_p_crois), ' / mutation rate : ', num2str(opti_p_mut)]);
-    disp(['Best fitness : ', num2str(fitness(1,g))]);
+    disp(['Epoch: ',num2str(g)]);
+    disp(['Sum of conductive cells: ', num2str(nombre_pixels_conducteurs), ' must be equal to : ', num2str(somme_controle)]);
+    disp(['Current maximal mutation probability: ', num2str(prob_mutation)]);
+    disp(['Last successfull - crossover rate: ', num2str(opti_p_crois), ' / mutation rate : ', num2str(opti_p_mut)]);
+    disp(['Best fitness: ', num2str(fitness(1,g))]);
     save Etat_courant.mat
     toc
     
