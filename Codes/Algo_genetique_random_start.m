@@ -1,14 +1,8 @@
 %https://doi.org/10.1016/j.ijthermalsci.2016.05.015
-
 clc;
 clear;
-rng('shuffle', 'twister')
 
-mkdir('Figure');
-mkdir('Best_image');
-mkdir('Average_image');
-
-%Conditions pour le solveur différences finies
+%---------Conditions for thermal science-----------------------------------
 k0=1;
 kp_k0=25;
 p=1e6;
@@ -16,14 +10,20 @@ pas_x=0.001;
 T_ref=298;
 taux_remplissage=0.3;
 imname='25x50.bmp';
+%--------------------------------------------------------------------------
 
-%Conditions pour l'algorithme génétique
+%--------Hyper parameters for genetic algorithm----------------------------
 taille_pop=1000;
 meilleurs=200;
 nb_generations=10000;
 prob_croisement=0.2;
 probabilite_mutation_maximale=0.1;
+%--------------------------------------------------------------------------
 
+rng('shuffle', 'twister')
+mkdir('Figure');
+mkdir('Best_image');
+mkdir('Average_image');
 
 %Initialisation variables d'affichage
 T_comp=0;
