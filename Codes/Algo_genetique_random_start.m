@@ -1,7 +1,7 @@
 %https://doi.org/10.1016/j.ijthermalsci.2016.05.015
 clc;
 clear;
-
+close all;
 %---------Conditions for thermal science-----------------------------------
 k0=1;
 kp_k0=10;
@@ -25,118 +25,120 @@ mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
 
-%Initialisation variables d'affichage
+
 T_comp=0;
 table=zeros(taille_pop,2);
-
-%creation des images initiales
-%récupère l'image
-
 couleurs=imread(imname);
 [hauteur,largeur,profondeur]=size(couleurs);
 conditi_limites_ini=zeros(hauteur,largeur);
-%conversion en fichier de conditions limites
 pixels_blancs=0;
-for k = 1:1:hauteur;
-    for l = 1:1:largeur;
+for k = 1:1:hauteur
+    for l = 1:1:largeur
         
         rouge = couleurs(k,l,1);
         vert = couleurs(k,l,2);
         bleu = couleurs(k,l,3);
         
-        if (rouge == 127) && (vert == 127) && (bleu == 127);
+        if (rouge == 127) && (vert == 127) && (bleu == 127)
             conditi_limites_ini(k,l)=-2;
-        end;
+        end
         
-        if (rouge == 0) && (vert == 0) && (bleu == 255);
+        if (rouge == 0) && (vert == 0) && (bleu == 255)
             conditi_limites_ini(k,l)=-3;
-        end;
+        end
         
-        if (rouge == 255) && (vert == 255) && (bleu == 255);
+        if (rouge == 255) && (vert == 255) && (bleu == 255)
             conditi_limites_ini(k,l)=k0;
             pixels_blancs=pixels_blancs+1;
-        end;
+        end
         
-    end;
-end;
+    end
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Création population initiale
+%initial population creation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 population=zeros(hauteur, largeur,taille_pop);
 nombre_pixels_conducteurs=ceil(pixels_blancs*taux_remplissage);
 disp('Creating the initial population frow scratch...');
 tic
-parfor i=1:1:taille_pop;
+parfor i=1:1:taille_pop
     population(:,:,i)=init_image(conditi_limites_ini,nombre_pixels_conducteurs, k0, kp_k0);
-end;
+end
 topology_history=zeros(hauteur, largeur, nb_generations);
 toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Evaluation et classement population
+%Fitness evaluation and sorting by fitness
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+figure('Position',[100 100 800 800]);
 for g=1:1:nb_generations
     tic
     
-    %calcul probabilité de mutation décroissante avec le calcul
+    %Mutation rate is decreased with epoch following an empirical law that
+    %works well on this problem
     prob_mutation=probabilite_mutation_maximale*exp(-5.8*g/nb_generations);
     
-    %évaluation des images
+    %Fitness calculation
     disp('Calculating fitness for each individual...');
-    % ordre des variables : variance, moyenne, temperature_max, map
-    % températures, map gradients, variance gradients
-    parfor i=1:1:taille_pop;
-        [distance,somme_entropie, entropie, variance_border,variance, moyenne,t_max, temp, grad,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,pas_x,p,population(:,:,i));
+    % Variables in this order : variance, moyenne, temperature_max, map
+    % temperatures, map gradients, variance gradients
+    parfor i=1:1:taille_pop
+        [~,~, ~, variance_border,~, ~,t_max, temp, ~,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,pas_x,p,population(:,:,i));
         fitness(i,g)=t_max;
-    end;
+    end
     
-    %récupération des dix meilleures images
+    %Best topologies are kept for next step
     temp_temp=[(1:1:taille_pop)',fitness(:,g)];
     pop_classe=sortrows(temp_temp, 2);
     indice=pop_classe(1:meilleurs,1);
-    
     opti_p_crois=table(indice(1),1);
     opti_p_mut=table(indice(1),2);
     
-    %On garde le meilleur inchangé systématiquement
+    if (g>1)
+        if (fitness(1,g)==fitness(1,g-1))
+            disp('No best configuration detected')
+        else
+            disp('Best configuration detected')
+        end
+    end
+    
+    %elitism with two times the best topology, you'll see why after
     nouvelle_population(:,:,1)=population(:,:,indice(1));
+    nouvelle_population(:,:,2)=population(:,:,indice(1));
     topology_history(:,:,g)=population(:,:,indice(1));
-    %On garde les paramètres du GA correpondant au meilleur enfant
+    %For keeping trace of the hyper parameters leading to success
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %Création d'une nouvelle population
+    %New population of childrens
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %On croise les meilleurs parents pour faire taille_pop-1 enfants
     disp('Applying the mutation/crossover algorithm...');
-    parfor m=2:1:(taille_pop)
+    parfor m=3:1:(taille_pop)
         [nouvelle_population(:,:,m),table(m,:)]=gene_enfant(population,kp_k0,k0, nombre_pixels_conducteurs, prob_mutation, prob_croisement, meilleurs,indice);
-    end;
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %écriture meilleure image
+    %get the best topology
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     meilleure_image=nouvelle_population(:,:,1);
-    
     best_image=zeros(hauteur,largeur,3);
     image_moyenne=zeros(hauteur,largeur,3);
     
     somme_controle=0;
-    for k = 1:1:hauteur;
-        for l = 1:1:largeur;
+    for k = 1:1:hauteur
+        for l = 1:1:largeur
             
-            if meilleure_image(k,l)==k0;
+            if meilleure_image(k,l)==k0
                 best_image(k,l,1)=255;
                 best_image(k,l,2)=255;
                 best_image(k,l,3)=255;
                 image_moyenne(k,l,1)=255-((mean(nouvelle_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 image_moyenne(k,l,2)=255-((mean(nouvelle_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 image_moyenne(k,l,3)=255-((mean(nouvelle_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
-            end;
+            end
             
-            if meilleure_image(k,l)==k0*kp_k0;
+            if meilleure_image(k,l)==k0*kp_k0
                 best_image(k,l,1)=0;
                 best_image(k,l,2)=0;
                 best_image(k,l,3)=0;
@@ -144,18 +146,18 @@ for g=1:1:nb_generations
                 image_moyenne(k,l,2)=255-((mean(nouvelle_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 image_moyenne(k,l,3)=255-((mean(nouvelle_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 somme_controle=somme_controle+1;
-            end;
+            end
             
-            if meilleure_image(k,l)==-2;
+            if meilleure_image(k,l)==-2
                 best_image(k,l,1)=127;
                 best_image(k,l,2)=127;
                 best_image(k,l,3)=127;
                 image_moyenne(k,l,1)=127;
                 image_moyenne(k,l,2)=127;
                 image_moyenne(k,l,3)=127;
-            end;
+            end
             
-            if meilleure_image(k,l)==-3;
+            if meilleure_image(k,l)==-3
                 best_image(k,l,1)=0;
                 best_image(k,l,2)=0;
                 best_image(k,l,3)=255;
@@ -163,10 +165,10 @@ for g=1:1:nb_generations
                 image_moyenne(k,l,2)=0;
                 image_moyenne(k,l,3)=255;
                 
-            end;
+            end
             
-        end;
-    end;
+        end
+    end
     
     best_image=uint8(best_image);
     image_moyenne=uint8(image_moyenne);
@@ -176,11 +178,11 @@ for g=1:1:nb_generations
     miroir_mean=fliplr(image_moyenne(1:hauteur,1:largeur-1,:));
     miroir_mean2=fliplr(miroir_mean);
     
-    if g==1;
+    if g==1
         imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
     end
-    if (g>1);
-        if not(sum(abs(sum(topology_history(:,:,g)-topology_history(:,:,g-1)))))==0;
+    if (g>1)
+        if not(sum(abs(sum(topology_history(:,:,g)-topology_history(:,:,g-1)))))==0
             imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
         end
     end
@@ -190,11 +192,11 @@ for g=1:1:nb_generations
     imwrite([miroir_mean2,miroir_mean],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %affichage console
+    %output to console
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    clc;
-    disp(['Epoch: ',num2str(g)]);
+    %clc;
+    disp(['---------Epoch: ',num2str(g),'---------']);
     disp(['Sum of conductive cells: ', num2str(nombre_pixels_conducteurs), ' must be equal to : ', num2str(somme_controle)]);
     disp(['Current maximal mutation probability: ', num2str(prob_mutation)]);
     disp(['Last successfull - crossover rate: ', num2str(opti_p_crois), ' / mutation rate : ', num2str(opti_p_mut)]);
@@ -203,22 +205,22 @@ for g=1:1:nb_generations
     toc
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %affichage graphique
+    %output to plot
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     
-    if g==2;
+    if g==2
         norme_iteration_1=fitness(1,1)-fitness(1,2);
-    end;
+    end
     
-    if g>1;
+    if g>1
         residus(1,g-1) = (fitness(1,g-1)-fitness(1,g))/norme_iteration_1;
         subplot(2,4,1);
         plot(log10(residus), '.r');
         title('Residuals');
         xlabel('Generation');
         ylabel('log10 value');
-    end;
+    end
     
     subplot(2,4,2);
     imagesc(best_image);
@@ -265,5 +267,5 @@ for g=1:1:nb_generations
     
     saveas(gcf,['Figure\Figure_',num2str(g,'%06.f')],'png');
     saveas(gcf,'Figure.png');
-end;
+end
 
