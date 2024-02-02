@@ -1,79 +1,9 @@
-%https://doi.org/10.1016/j.ijthermalsci.2016.05.015
-clc;
-clear;
-close all;
-%---------Conditions for thermal science-----------------------------------
-k0=1;
-kp_k0=10;
-p=1e6;
-step_x=0.001;
-T_ref=298;
-filling_ratio=0.3;
-imname='50x100.bmp';
-%--------------------------------------------------------------------------
-
-%--------Hyper parameters for genetic algorithm----------------------------
-population_size=1000;
-population_best=200;
-nb_generations=10000;
-prob_croisement=0.2;
+load Etat_courant.mat
 prob_mutation_max=0.1;
-%--------------------------------------------------------------------------
-
-rng('shuffle', 'twister')
-mkdir('Figure');
-mkdir('Best_topology');
-mkdir('Average_topology');
-
-
-T_comp=0;
-table=zeros(population_size,2);
-pixels=imread(imname);
-[height,width,layers]=size(pixels);
-Initial_boundary_limits=zeros(height,width);
-non_conductive_pixels=0;
-for k = 1:1:height
-    for l = 1:1:width
-        
-        red = pixels(k,l,1);
-        green = pixels(k,l,2);
-        blue = pixels(k,l,3);
-        
-        if (red == 127) && (green == 127) && (blue == 127)
-            Initial_boundary_limits(k,l)=-2;
-        end
-        
-        if (red == 0) && (green == 0) && (blue == 255)
-            Initial_boundary_limits(k,l)=-3;
-        end
-        
-        if (red == 255) && (green == 255) && (blue == 255)
-            Initial_boundary_limits(k,l)=k0;
-            non_conductive_pixels=non_conductive_pixels+1;
-        end
-        
-    end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%initial population creation
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-population=zeros(height, width,population_size);
-conductive_pixels=ceil(non_conductive_pixels*filling_ratio);
-disp('Creating the initial population frow scratch...');
-tic
-parfor i=1:1:population_size
-    population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
-end
-topology_history=zeros(height, width, nb_generations);
-toc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Fitness evaluation and sorting by fitness
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+m=g;
+close all
 figure('Position',[100 100 800 800]);
-for g=1:1:nb_generations
+for g=m:1:nb_generations
     tic
     
     %Mutation rate is decreased with epoch following an empirical law that
