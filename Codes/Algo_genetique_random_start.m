@@ -9,7 +9,7 @@ p=1e6;
 step_x=0.001;
 T_ref=298;
 filling_ratio=0.3;
-imname='50x100.bmp';
+imname='100x200.bmp';
 %--------------------------------------------------------------------------
 
 %--------Hyper parameters for genetic algorithm----------------------------
@@ -17,7 +17,7 @@ population_size=1000;
 population_best=200;
 nb_generations=10000;
 prob_croisement=0.2;
-population_bestimale=0.1;
+prob_mutation_max=0.1;
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
@@ -78,7 +78,7 @@ for g=1:1:nb_generations
     
     %Mutation rate is decreased with epoch following an empirical law that
     %works well on this problem
-    prob_mutation=population_bestimale*exp(-5.8*g/nb_generations);
+    prob_mutation=prob_mutation_max*exp(-5.8*g/nb_generations);
     
     %Fitness calculation
     disp('Calculating fitness for each individual...');
