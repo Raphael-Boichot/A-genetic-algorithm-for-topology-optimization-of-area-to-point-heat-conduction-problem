@@ -63,7 +63,7 @@ population=zeros(height, width,population_size);
 conductive_pixels=ceil(non_conductive_pixels*filling_ratio);
 disp('Creating the initial population frow scratch...');
 tic
-parfor i=1:1:population_size
+parfor i=1:population_size
     population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
 end
 topology_history=zeros(height, width, nb_generations);
@@ -84,8 +84,8 @@ for g=1:1:nb_generations
     disp('Calculating fitness for each individual...');
     % Variables in this order : variance, moyenne, temperature_max, map
     % temperatures, map gradients, variance gradients
-    parfor i=1:1:population_size
-        [~,~, ~, variance_border,~, ~,t_max, temp, ~,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,i));
+    parfor i=1:population_size
+        [~,~, ~, variance_border,~, ~,t_max, ~, ~,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,i));
         fitness(i,g)=t_max;
     end
     
@@ -98,11 +98,19 @@ for g=1:1:nb_generations
 
     %elitism
     new_population(:,:,1)=population(:,:,indice(1));
-    new_population(:,:,2)=population(:,:,indice(1));
+    new_population(:,:,2)=population(:,:,indice(1));%this one can be used as target for other algorithm
     
+    %trying a step of cellular automaton each time, just in case, for fun
+    % [~,~, ~, ~, ~, ~,~,~, grad, ~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
+    % note=zeros(height, width);
+    % note(2:end-1,2:end-1)=grad;
+    % disp('Applying a step of cellular automaton to a good configuration, just for fun')
+    % new_population(:,:,2)=cellular_automaton(population(:,:,indice(1)),note, kp_k0,1,conductive_pixels,0.1);
+
     if (g>1)
         if (fitness(1,g)==fitness(1,g-1))
-             disp('---------No better configuration detected---------')
+            disp('---------No better configuration detected---------')
+            %trying an ESO algorithm just for fun
             %disp('Applying the ESO algorithm')
             %[ESO_shape,growth,etching] = fun_ESO_algorithm(population(:,:,indice(1)),k0*kp_k0,k0,T_ref,step_x,p);
             %new_population(:,:,1)=ESO_shape;
@@ -117,7 +125,7 @@ for g=1:1:nb_generations
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     disp('Applying the mutation/crossover algorithm...');
-    parfor m=3:1:(population_size)
+    parfor m=3:(population_size)
         [new_population(:,:,m),table(m,:)]=gene_enfant(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_croisement, population_best,indice);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
