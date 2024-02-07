@@ -102,10 +102,23 @@ for g=m:1:nb_generations
     disp(['Checksum: ',num2str(checksum-conductive_pixels),' (must be 0)']);
     disp(['Current maximal mutation probability: ', num2str(prob_mutation)]);
     disp('Calculating fitness for each individual...');
-    % Variables in this order : variance, moyenne, temperature_max, map
-    % temperatures, map gradients, variance gradients
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %evaluate the fitness
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     parfor i=1:population_size
-        [~,~, ~, variance_border,~, ~,t_max, ~, ~,var_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,i));
+        % Variables output in this order : 
+        % 1. Distance of the hotest cell to the heat sink (scalar)
+        % 2. Sum of cell entropy (scalar)
+        % 3. Entropy map (matrix)
+        % 4. Variance of temperatures accross the 1D adabatic borders (scalar)
+        % 5. Variance of temperatures accross the 2D domain (scalar)
+        % 6. Mean temperature (scalar)
+        % 7. Maximal temperature accross the 2D domain (scalar)
+        % 8. Map of temperatures (matrix)
+        % 9. map of thermal gradients (matrix)
+        % 10. Variance of gradients across the 2D domain (scalar)
+        [~,~,~,~,~,~,t_max,~,~,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,i));
         fitness(i,g)=t_max;
     end
 
@@ -241,8 +254,8 @@ for g=m:1:nb_generations
     title('Average topology');
 
     subplot(2,4,4);
-    [distance,somme_entropie, entropie, border_variance, variance, moyenne,t_max,temp_affichage, grad, variance_grad]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
-    imagesc(temp_affichage);
+    [~,~,entropy_map, ~, ~, ~,t_max,map_temperature,grad,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
+    imagesc(map_temperature);
     title('Objective function');
 
     P_1(g,1)=opti_p_crois;
@@ -264,7 +277,7 @@ for g=m:1:nb_generations
     xlabel('Generation');
 
     subplot(2,4,7);
-    imagesc(log10(entropie(2:end-1,2:end-1)));
+    imagesc(log10(entropy_map(2:end-1,2:end-1)));
     title('Log10 Entropy');
 
     subplot(2,4,8);
