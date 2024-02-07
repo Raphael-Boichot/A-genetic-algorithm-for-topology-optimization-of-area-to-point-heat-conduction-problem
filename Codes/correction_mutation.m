@@ -4,7 +4,7 @@ function child2=correction_mutation(child,kp_k0,k0,number_conductive_cells, p_mu
 pixels_cond=0;
 
 %Mutation, here we just add conductive matter randomly around existing conductive matter
-number_of_mutations=round(p_mutation*number_conductive_cells);
+number_of_mutations=ceil(p_mutation*number_conductive_cells);
 cell_counter=0;
 while not(number_of_mutations==cell_counter)
     row=ceil(rand*height);
