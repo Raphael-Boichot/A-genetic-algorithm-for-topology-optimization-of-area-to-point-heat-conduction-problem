@@ -16,7 +16,7 @@ imname='50x100.bmp';
 population_size=1000;
 population_best=200;
 nb_generations=10000;
-prob_croisement=0.2;
+prob_crossover=0.2;
 prob_mutation_max=0.1;
 %--------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ for g=1:1:nb_generations
 
     disp('Applying the mutation/crossover algorithm...');
     parfor m=3:(population_size)
-        [new_population(:,:,m),table(m,:)]=gene_enfant(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_croisement, population_best,indice);
+        [new_population(:,:,m),table(m,:)]=generate_child(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_crossover, population_best,indice);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %get the best topology

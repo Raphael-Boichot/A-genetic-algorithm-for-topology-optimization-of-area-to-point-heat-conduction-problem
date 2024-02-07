@@ -1,16 +1,15 @@
-function condition_limites_ini=init_image(condition_limites_ini,nombre_pixels_conducteurs, k0, kp_k0);
+function boundary_conditions_ini=init_image(boundary_conditions_ini,number_conductive_cells, k0, kp_k0)
 
 %récupère les dimensions de l'image
-[hauteur,largeur,profondeur]=size(condition_limites_ini);
+[height,width,~]=size(boundary_conditions_ini);
 k=0;
 
-while k<nombre_pixels_conducteurs;
-    h=ceil(rand*hauteur);
-    l=ceil(rand*largeur);
-    
-    if condition_limites_ini(h,l)==k0; 
-    condition_limites_ini(h,l)=k0*kp_k0; 
+while k<number_conductive_cells
+    h=ceil(rand*height);
+    l=ceil(rand*width);
+    if boundary_conditions_ini(h,l)==k0 
+    boundary_conditions_ini(h,l)=k0*kp_k0; 
     k=k+1;
-    end;
+    end
         
-end;
+end

@@ -63,7 +63,7 @@ for g=m:1:nb_generations
 
     disp('Applying the mutation/crossover algorithm...');
     parfor m=3:1:(population_size)
-        [new_population(:,:,m),table(m,:)]=gene_enfant(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_croisement, population_best,indice);
+        [new_population(:,:,m),table(m,:)]=generate_child(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_crossover, population_best,indice);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %get the best topology
