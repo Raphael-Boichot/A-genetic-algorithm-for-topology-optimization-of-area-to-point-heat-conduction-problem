@@ -7,10 +7,12 @@ This code is intended to solve the area-to-point topology problem in thermal sci
 **Code free to use, please cite the author according to the license !**
 
 Using the code is very simple: 
-- fill the user parameters in the main code
-- choose the objective function
-- Run the code and enjoy emerging shapes !
+- Fill the user parameters in the main code;
+- Choose the objective function;
+- Run the code and enjoy your emerging shapes !
 - If the PC crashes for some reason, code will run again from last know configuration saved automatically every 10 epochs.
+
+The default configuration converges in about one day.
 
 The code can natively minimize (amond 10 choices):
 - (1) the distance from the maximum temperature element to the heat sink;
