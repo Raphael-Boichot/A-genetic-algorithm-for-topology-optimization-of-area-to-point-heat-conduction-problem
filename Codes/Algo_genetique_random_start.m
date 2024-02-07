@@ -251,7 +251,7 @@ for g=1:1:nb_generations
     
     subplot(2,4,5);
     plot(P_1(:,1), '.b');
-    title('Mutation rate');
+    title('Crossover rate');
     xlabel('Generation');
     ylabel('Value');
     
