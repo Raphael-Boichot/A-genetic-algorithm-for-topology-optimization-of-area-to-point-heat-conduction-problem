@@ -129,31 +129,19 @@ for g=m:1:nb_generations
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %get the best topology
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %Best topologies are kept for next step
     temp_temp=[(1:1:population_size)',fitness(:,g)];
     pop_classe=sortrows(temp_temp, 2);
     indice=pop_classe(1:population_best,1);
     opti_p_crois=table(indice(1),1);
     opti_p_mut=table(indice(1),2);
 
-    %elitism
+    %Best topologies are kept for next step because eugenics
     new_population(:,:,1)=population(:,:,indice(1));
-    new_population(:,:,2)=population(:,:,indice(1));%this one can be used as target for other algorithm
-
-    %trying a step of cellular automaton each time, just in case, for fun
-    % [~,~, ~, ~, ~, ~,~,~, grad, ~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
-    % note=zeros(height, width);
-    % note(2:end-1,2:end-1)=grad;
-    % disp('Applying a step of cellular automaton to a good configuration, just for fun')
-    % new_population(:,:,2)=cellular_automaton(population(:,:,indice(1)),note, kp_k0,1,conductive_pixels,0.1);
+    new_population(:,:,2)=population(:,:,indice(1));%this one can be used as target for another algorithm
 
     if (g>1)
         if (fitness(1,g)==fitness(1,g-1))
             disp('---------No better configuration detected---------')
-            %trying an ESO algorithm just for fun
-            %disp('Applying the ESO algorithm')
-            %[ESO_shape,growth,etching] = fun_ESO_algorithm(population(:,:,indice(1)),k0*kp_k0,k0,T_ref,step_x,p);
-            %new_population(:,:,1)=ESO_shape;
         else
             disp('>>>>>>>>>Better configuration detected<<<<<<<<<<<<')
         end
