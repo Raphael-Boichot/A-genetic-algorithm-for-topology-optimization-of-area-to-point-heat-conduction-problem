@@ -2,7 +2,7 @@ load Etat_courant.mat
 prob_mutation_max=0.1;
 m=g;
 close all
-figure('Position',[100 100 800 800]);
+figure('Position',[100 100 900 800]);
 disp(['---------Restarting from Epoch: ',num2str(m)])
 
 for g=m:1:nb_generations

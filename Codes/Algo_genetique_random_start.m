@@ -73,7 +73,7 @@ toc
 %Fitness evaluation and sorting by fitness
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-figure('Position',[100 100 800 800]);
+figure('Position',[100 100 900 800]);
 for g=1:1:nb_generations
 
     %Mutation rate is decreased with epoch following an empirical law that
