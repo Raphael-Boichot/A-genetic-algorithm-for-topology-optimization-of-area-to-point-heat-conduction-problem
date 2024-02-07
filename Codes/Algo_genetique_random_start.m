@@ -14,7 +14,7 @@ p=1e6;
 step_x=0.001;
 T_ref=298;
 filling_ratio=0.3;
-imname='50x100.bmp';
+starting_image='50x100.bmp';
 %--------Hyper parameters for genetic algorithm----------------------------
 population_size=1000;
 population_best=200;
@@ -31,7 +31,7 @@ figure('Position',[100 100 900 800]);
 
 T_comp=0;
 table=zeros(population_size,2);
-pixels=imread(imname);
+pixels=imread(starting_image);
 [height,width,layers]=size(pixels);
 Initial_boundary_limits=zeros(height,width);
 non_conductive_pixels=0;
@@ -155,7 +155,7 @@ for g=m:1:nb_generations
             %[ESO_shape,growth,etching] = fun_ESO_algorithm(population(:,:,indice(1)),k0*kp_k0,k0,T_ref,step_x,p);
             %new_population(:,:,1)=ESO_shape;
         else
-            disp('!!!!!!!!!Better configuration detected!!!!!!!!!!!!')
+            disp('>>>>>>>>>Better configuration detected<<<<<<<<<<<<')
         end
     end
 
