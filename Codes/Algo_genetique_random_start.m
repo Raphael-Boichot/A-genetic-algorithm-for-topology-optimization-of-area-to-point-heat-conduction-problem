@@ -1,7 +1,12 @@
 %https://doi.org/10.1016/j.ijthermalsci.2016.05.015
+%https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
 clc;
 clear;
 close all;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%User parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %---------Conditions for thermal science-----------------------------------
 k0=1;
 kp_k0=10;
@@ -10,8 +15,6 @@ step_x=0.001;
 T_ref=298;
 filling_ratio=0.3;
 imname='50x100.bmp';
-%--------------------------------------------------------------------------
-
 %--------Hyper parameters for genetic algorithm----------------------------
 population_size=1000;
 population_best=200;
@@ -104,7 +107,7 @@ for g=m:1:nb_generations
     disp('Calculating fitness for each individual...');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %evaluate the fitness
+    %evaluate the fitness / choose objective function
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     parfor i=1:population_size
         % Variables output in this order : 
