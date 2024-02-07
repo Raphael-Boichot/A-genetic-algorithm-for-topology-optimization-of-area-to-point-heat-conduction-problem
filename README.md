@@ -1,4 +1,4 @@
-# A  genetic algorithm for topology optimization of area-to-point heat conduction problem
+## A  genetic algorithm for topology optimization of area-to-point heat conduction problem
 
 This repo contains the codes used in the following paper entitled: [A genetic algorithm for topology optimization of area-to-point heat conduction problem, by R. Boichot, Y. Fan - International Journal of Thermal Sciences, 2016](https://doi.org/10.1016/j.ijthermalsci.2016.05.015).
 
@@ -12,7 +12,7 @@ Using the code is very simple:
 - Run the code and enjoy your emerging shapes !
 - If the PC crashes for some reason, code will run again from last know configuration saved automatically every 10 epochs.
 
-The default configuration converges in about one day on a reasonably powerfull multicore desktop PC. Code have not been tested/validated with GNU Octave.
+The default configuration (50x100 cells) converges in about one day on a reasonably powerfull multicore desktop PC of 2024. Code has not been tested/validated with GNU Octave.
 
 The code can natively minimize (amond 10 choices):
 - (1) the distance from the maximum temperature element to the heat sink;
