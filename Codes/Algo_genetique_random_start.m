@@ -68,12 +68,16 @@ checksum=conductive_pixels;
 topology_history=zeros(height, width, nb_generations);
 
 %Check is a preceding session was crashed and reload it
-if isfile('Etat_courant.mat')
-    disp('Reloading last session, erase mat file for blank restart');
-    load Etat_courant.mat
+if isfile('Current_state.mat')
+    disp('Reloading last session and continuing from last known configuration...');
+    disp('To start from scratch erase manually the *.mat file in directory');
+    load Current_state.mat
     m=g;
 else
-    disp('Creating the initial population frow scratch...');
+    disp('Creating the initial population frow scratch and cleaning directories...');
+    delete('Figure/*.png');
+    delete('Best_topology/*.png');
+    delete('Average_topology/*.png');
     parfor i=1:population_size
         population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
     end
@@ -86,8 +90,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for g=m:1:nb_generations
 
-    %Mutation rate is decreased with epoch following an empirical law that
-    %works well on this problem
+    %Mutation rate is decreased with epoch following an empirical law that works well on this problem
     prob_mutation=prob_mutation_max*exp(-5.8*g/nb_generations);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +163,6 @@ for g=m:1:nb_generations
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for k = 1:1:height
         for l = 1:1:width
-
             if best_topology(k,l)==k0
                 best_image(k,l,1)=255;
                 best_image(k,l,2)=255;
@@ -169,7 +171,6 @@ for g=m:1:nb_generations
                 mean_topology(k,l,2)=255-((mean(new_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 mean_topology(k,l,3)=255-((mean(new_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
             end
-
             if best_topology(k,l)==k0*kp_k0
                 best_image(k,l,1)=0;
                 best_image(k,l,2)=0;
@@ -179,7 +180,6 @@ for g=m:1:nb_generations
                 mean_topology(k,l,3)=255-((mean(new_population(k,l,:))-k0)/(k0*kp_k0-k0))*255;
                 checksum=checksum+1;
             end
-
             if best_topology(k,l)==-2
                 best_image(k,l,1)=127;
                 best_image(k,l,2)=127;
@@ -188,7 +188,6 @@ for g=m:1:nb_generations
                 mean_topology(k,l,2)=127;
                 mean_topology(k,l,3)=127;
             end
-
             if best_topology(k,l)==-3
                 best_image(k,l,1)=0;
                 best_image(k,l,2)=0;
@@ -196,15 +195,12 @@ for g=m:1:nb_generations
                 mean_topology(k,l,1)=0;
                 mean_topology(k,l,2)=0;
                 mean_topology(k,l,3)=255;
-
             end
-
         end
     end
 
     best_image=uint8(best_image);
     mean_topology=uint8(mean_topology);
-
     miroir_best=fliplr(best_image(1:height,1:width-1,:));
     miroir_best2=fliplr(miroir_best);
     miroir_mean=fliplr(mean_topology(1:height,1:width-1,:));
@@ -284,7 +280,7 @@ for g=m:1:nb_generations
 
     if (rem(g,10)==0)||(g==1)
         disp('Saving current memory state...');
-        save Etat_courant.mat
+        save Current_state.mat
     end
     toc
 end
