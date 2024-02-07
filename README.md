@@ -12,7 +12,7 @@ Using the code is very simple:
 - Run the code and enjoy your emerging shapes !
 - If the PC crashes for some reason, code will run again from last know configuration saved automatically every 10 epochs.
 
-The default configuration converges in about one day.
+The default configuration converges in about one day on a reasonably powerfull multicore desktop PC. Code have not been tested/validated with GNU Octave.
 
 The code can natively minimize (amond 10 choices):
 - (1) the distance from the maximum temperature element to the heat sink;
