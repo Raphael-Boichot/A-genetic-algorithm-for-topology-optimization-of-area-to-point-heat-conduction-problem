@@ -24,7 +24,7 @@ rng('shuffle', 'twister')
 mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
-
+figure('Position',[100 100 900 800]);
 
 T_comp=0;
 table=zeros(population_size,2);
@@ -32,6 +32,10 @@ pixels=imread(imname);
 [height,width,layers]=size(pixels);
 Initial_boundary_limits=zeros(height,width);
 non_conductive_pixels=0;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Image translation into boundary limits
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k = 1:1:height
     for l = 1:1:width
 
@@ -58,23 +62,29 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %initial population creation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 population=zeros(height, width,population_size);
 conductive_pixels=ceil(non_conductive_pixels*filling_ratio);
 checksum=conductive_pixels;
-disp('Creating the initial population frow scratch...');
-tic
-parfor i=1:population_size
-    population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
-end
 topology_history=zeros(height, width, nb_generations);
-toc
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Fitness evaluation and sorting by fitness
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-figure('Position',[100 100 900 800]);
-for g=1:1:nb_generations
+%Check is a preceding session was crashed and reload it
+if isfile('Etat_courant.mat')
+    disp('Reloading last session, erase mat file for blank restart');
+    load Etat_courant.mat
+    m=g;
+else
+    disp('Creating the initial population frow scratch...');
+    parfor i=1:population_size
+        population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
+    end
+    m=1;
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Main loop
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for g=m:1:nb_generations
 
     %Mutation rate is decreased with epoch following an empirical law that
     %works well on this problem
@@ -96,6 +106,10 @@ for g=1:1:nb_generations
         fitness(i,g)=t_max;
     end
 
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %get the best topology
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %Best topologies are kept for next step
     temp_temp=[(1:1:population_size)',fitness(:,g)];
     pop_classe=sortrows(temp_temp, 2);
@@ -127,22 +141,23 @@ for g=1:1:nb_generations
     end
 
     topology_history(:,:,g)=new_population(:,:,1);
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %New population of childrens
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     disp('Applying the mutation/crossover algorithm...');
     parfor m=3:(population_size)
         [new_population(:,:,m),table(m,:)]=generate_child(population,kp_k0,k0, conductive_pixels, prob_mutation, prob_crossover, population_best,indice);
     end
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %get the best topology
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     best_topology=new_population(:,:,1);
     best_image=zeros(height,width,3);
     mean_topology=zeros(height,width,3);
-
     checksum=0;
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %Make fancy display
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for k = 1:1:height
         for l = 1:1:width
 
