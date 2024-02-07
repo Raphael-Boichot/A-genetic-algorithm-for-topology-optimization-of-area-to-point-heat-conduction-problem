@@ -6,7 +6,7 @@ This code is intended to solve the area-to-point topology problem in thermal sci
 
 **Code free to use, please cite the author according to the license !**
 
-Using the code is simple: fill the parameters in the [main code](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/8befe51794b9fa06118081941d0afa931675f72b/Codes/Algo_genetique_random_start.m#L5) and choose the [objective function](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/8befe51794b9fa06118081941d0afa931675f72b/Codes/Algo_genetique_random_start.m#L89). Run the code and enjoy emerging shapes !
+Using the code is simple: fill the parameters in the main code and choose the objective function. Run the code and enjoy emerging shapes !
 
 The code can natively minimize:
 - (1) the distance from the maximum temperature element to the heat sink;
