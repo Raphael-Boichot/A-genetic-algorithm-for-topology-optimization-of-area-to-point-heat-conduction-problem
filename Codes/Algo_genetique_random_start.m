@@ -20,7 +20,7 @@ population_size=1000;
 population_best=200;
 nb_generations=10000;
 prob_crossover=0.2;
-prob_mutation_max=0.1;
+prob_mutation_max=0.05;
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
@@ -41,24 +41,19 @@ non_conductive_pixels=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k = 1:1:height
     for l = 1:1:width
-
         red = pixels(k,l,1);
         green = pixels(k,l,2);
         blue = pixels(k,l,3);
-
         if (red == 127) && (green == 127) && (blue == 127)
             Initial_boundary_limits(k,l)=-2;
         end
-
         if (red == 0) && (green == 0) && (blue == 255)
             Initial_boundary_limits(k,l)=-3;
         end
-
         if (red == 255) && (green == 255) && (blue == 255)
             Initial_boundary_limits(k,l)=k0;
             non_conductive_pixels=non_conductive_pixels+1;
         end
-
     end
 end
 
@@ -245,9 +240,11 @@ for g=m:1:nb_generations
     title('Average topology');
 
     subplot(2,4,4);
-    [~,~,entropy_map, ~, ~, ~,t_max,map_temperature,grad,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
+    [~,~,entropy_map,~,~,~,t_max,map_temperature,grad,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
     imagesc(map_temperature);
     title('Objective function');
+
+    disp(['Maximal temperature: ',num2str(t_max)])
 
     P_1(g,1)=opti_p_crois;
     P_1(g,2)=opti_p_mut;
