@@ -4,6 +4,8 @@ This repo contains the codes used in the following paper entitled: [A genetic al
 
 This code is intended to solve the area-to-point topology problem in thermal science with a global optimization algorithm, more precisely a genetic algorithm. The code initially generates a massive population of random topology candidates for cooling a heated surface. From generations to generations, following the principle of the Evolution of Species theorized by Charles Darwin, better shapes are selected, mutated, crossed, while average shapes are progressively discarded. The code is extrememy hungry for calculation power. It is meant to be used with the [Parallel computing toolbox of Matlab](https://fr.mathworks.com/products/parallel-computing.html) on multi-core processors. The code itself solves a Finite Difference approximation of the heat equation on unspecified shapes with a direct sparse solver. The test case converges in about one day on a desktop computer with 8 cores.
 
+You may also check the [Evolutionary Structural Optimisation (ESO) algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm) that tackles the same problem with similar results.
+
 **Code free to use, please cite the author according to the license !**
 
 Using the code is very simple: 
