@@ -1,3 +1,5 @@
+%https://doi.org/10.1016/j.ijthermalsci.2016.05.015
+%https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
 function boundary_conditions_ini=init_image(boundary_conditions_ini,number_conductive_cells, k0, kp_k0)
 
 %récupère les dimensions de l'image

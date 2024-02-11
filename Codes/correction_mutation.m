@@ -1,5 +1,6 @@
+%https://doi.org/10.1016/j.ijthermalsci.2016.05.015
+%https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
 function child2=correction_mutation(child,kp_k0,k0,number_conductive_cells, p_mutation)
-
 [height,width,~]=size(child);
 pixels_cond=0;
 

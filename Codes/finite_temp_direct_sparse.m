@@ -1,6 +1,8 @@
-%*****************Automate cellulaire*********************INPG/BOICHOT/2008
+%used in:
+%https://github.com/Raphael-Boichot/Tree-network-structure-generation-for-heat-conduction-by-cellular-automaton
+%https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm
+%https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
 function [distance,sum_of_entropy, entropy, border_variance,variance, mean_temperature,maximal_temperature,temp,grad,variance_grad]=finite_temp_direct_sparse(kp_k0,k0,heat_sink_temperature,pas_x,p_vol,boundary_conditions)
-
 [height,width,~]=size(boundary_conditions);
 temp=ones(height,width).*heat_sink_temperature;
 conductivity_table=zeros(height,width,5);
