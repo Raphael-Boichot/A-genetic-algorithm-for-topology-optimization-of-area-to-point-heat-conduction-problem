@@ -8,19 +8,19 @@ close all;
 %User parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %---------Conditions for thermal science-----------------------------------
-k0=1;
-kp_k0=10;
-p=1e6;
-step_x=0.001;
-T_ref=298;
-filling_ratio=0.3;
-starting_image='50x100.bmp';
+k0=1;                           %conductivity of the heating matter
+kp_k0=10;                       %conductivity of the draining material
+p=1e6;                          %surface of volume power density
+delta_x=0.001;                  %size of x/y square cells
+Heat_sink_temperature=298;      %self explanatory
+filling_ratio=0.3;              %ratio of conductive matter on the surface
+starting_image='50x100.bmp';    %self explanatory   
 %--------Hyper parameters for genetic algorithm----------------------------
-population_size=1000;
-population_best=200;
-nb_generations=10000;
-prob_crossover=0.2;
-prob_mutation_max=0.05;
+population_size=1000;           %size of the topology dataset
+population_best=200;            %rank of the last topology allowed to survive
+nb_generations=10000;           %number of epochs
+prob_crossover=0.2;             %crossover probability at each cell
+prob_mutation_max=0.05;         %m probability at each cell
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
@@ -116,7 +116,7 @@ for g=m:1:nb_generations
         % 8. Map of temperatures (matrix)
         % 9. map of thermal gradients (matrix)
         % 10. Variance of gradients across the 2D domain (scalar)
-        [~,~,~,~,~,~,t_max,~,~,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,i));
+        [~,~,~,~,~,~,t_max,~,~,~]=finite_temp_direct_sparse(k0*kp_k0,k0,Heat_sink_temperature,delta_x,p,population(:,:,i));
         fitness(i,g)=t_max;
     end
 
@@ -240,7 +240,7 @@ for g=m:1:nb_generations
     title('Average topology');
 
     subplot(2,4,4);
-    [~,~,entropy_map,~,~,~,t_max,map_temperature,grad,~]=finite_temp_direct_sparse(k0*kp_k0,k0,T_ref,step_x,p,population(:,:,1));
+    [~,~,entropy_map,~,~,~,t_max,map_temperature,grad,~]=finite_temp_direct_sparse(k0*kp_k0,k0,Heat_sink_temperature,delta_x,p,population(:,:,1));
     imagesc(map_temperature);
     title('Objective function');
 

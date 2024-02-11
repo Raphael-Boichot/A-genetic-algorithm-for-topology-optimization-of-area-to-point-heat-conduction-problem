@@ -2,7 +2,7 @@
 %https://github.com/Raphael-Boichot/Tree-network-structure-generation-for-heat-conduction-by-cellular-automaton
 %https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm
 %https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
-function [distance,sum_of_entropy, entropy, border_variance,variance, mean_temperature,maximal_temperature,temp,grad,variance_grad]=finite_temp_direct_sparse(kp_k0,k0,heat_sink_temperature,pas_x,p_vol,boundary_conditions)
+function [distance,sum_of_entropy, entropy, border_variance,variance, mean_temperature,maximal_temperature,temp,grad,variance_grad]=finite_temp_direct_sparse(kp_k0,k0,heat_sink_temperature,delta_x,p_vol,boundary_conditions)
 [height,width,~]=size(boundary_conditions);
 temp=ones(height,width).*heat_sink_temperature;
 conductivity_table=zeros(height,width,5);
@@ -18,10 +18,10 @@ end
 for k=2:1:(height-1)
     for l=2:1:(width-1)
         %thermal conductance table
-        conductivity_table(k, l, 2) = pas_x / ((pas_x / 2) / temporary_boundaries(k-1,l) + (pas_x / 2) / temporary_boundaries(k, l));
-        conductivity_table(k, l, 3) = pas_x / ((pas_x / 2) / temporary_boundaries(k,l+1) + (pas_x / 2) / temporary_boundaries(k, l));
-        conductivity_table(k, l, 4) = pas_x / ((pas_x / 2) / temporary_boundaries(k+1,l) + (pas_x / 2) / temporary_boundaries(k, l));
-        conductivity_table(k, l, 5) = pas_x / ((pas_x / 2) / temporary_boundaries(k,l-1) + (pas_x / 2) / temporary_boundaries(k, l));
+        conductivity_table(k, l, 2) = delta_x / ((delta_x / 2) / temporary_boundaries(k-1,l) + (delta_x / 2) / temporary_boundaries(k, l));
+        conductivity_table(k, l, 3) = delta_x / ((delta_x / 2) / temporary_boundaries(k,l+1) + (delta_x / 2) / temporary_boundaries(k, l));
+        conductivity_table(k, l, 4) = delta_x / ((delta_x / 2) / temporary_boundaries(k+1,l) + (delta_x / 2) / temporary_boundaries(k, l));
+        conductivity_table(k, l, 5) = delta_x / ((delta_x / 2) / temporary_boundaries(k,l-1) + (delta_x / 2) / temporary_boundaries(k, l));
     end
 end
 
@@ -65,7 +65,7 @@ for i=1:1:(height)
             row(k)=ind_1;
             column(k)=ind_1;
             value(k)=-1*somme_cond;
-            if boundary_conditions(i,j)==k0; B(ind_1)=B(ind_1)-p_vol*pas_x^2;end
+            if boundary_conditions(i,j)==k0; B(ind_1)=B(ind_1)-p_vol*delta_x^2;end
         end
         if not (fin==1)
             %Cell North (2)
@@ -139,7 +139,7 @@ for k=1:1:height
             flux3=conductivity_table(k,l,4)*(temp(k+1,l)-temp(k,l));
             flux4=conductivity_table(k,l,5)*(temp(k,l-1)-temp(k,l));
             flux5=0;
-            if boundary_conditions(k,l)==k0; flux5=p_vol*pas_x*pas_x; end
+            if boundary_conditions(k,l)==k0; flux5=p_vol*delta_x*delta_x; end
             if not(boundary_conditions(k-1,l)==-2)
                 entropy(k,l)=entropy(k,l)+(abs(flux1/temp(k,l)-abs(flux1/temp(k-1,l))))*sign(temp(k,l)-temp(k-1,l));
             end
