@@ -16,6 +16,8 @@ Heat_sink_temperature=298;      %self explanatory
 filling_ratio=0.3;              %ratio of conductive matter on the surface
 starting_image='50x100.bmp';    %self explanatory   
 %--------Hyper parameters for genetic algorithm----------------------------
+%hyper parameters have been optimized with blood, sweat, and tears
+%Believe me, they are efficient for tackling this problem
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
 nb_generations=10000;           %number of epochs
