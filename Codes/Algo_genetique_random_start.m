@@ -19,8 +19,8 @@ starting_image='50x100.bmp';    %self explanatory
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
 nb_generations=10000;           %number of epochs
-prob_crossover=0.2;             %crossover probability at each cell
-prob_mutation_max=0.05;         %m probability at each cell
+prob_crossover=0.2;             %crossover probability at each cell (constant with epoch)
+prob_mutation_max=0.1;          %mutation probability at each cell (decrases with epoch, see code)
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
