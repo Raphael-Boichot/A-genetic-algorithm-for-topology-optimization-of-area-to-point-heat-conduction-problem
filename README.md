@@ -36,7 +36,7 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 ## Various shapes at convergence for kp/k0=10
 ![converged shapes](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Converged_shapes.png)
 
-## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 (100 steps per frame, grayscales are NOT compression artifacts but different simultaneous solutions averaged)
+## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 (100 steps per frame, grayscales are NOT compression artifacts but different simultaneous solutions present a a given epoch and averaged)
 ![](Pictures/GA_output.gif)
 
 ## Epilogue
