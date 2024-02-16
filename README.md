@@ -40,7 +40,9 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 ![](Pictures/GA_output.gif)
 
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm)
-![](Pictures/Animation.gif)
+![](Pictures/Animation.gif). 
+
+Adding extra steps of ESO algorithm after the GA algorithm improves the thermal efficiency (decreases the thermal resistance) of only about 1% despite noticable topology differences. This indicates that the objective function is rather flat regarding the influence of the topology near the global optimum.
 
 ## Epilogue
 
