@@ -47,3 +47,7 @@ Adding extra steps of ESO algorithm after the GA algorithm improves the thermal 
 ## Epilogue
 
 It has been proven by some brilliant team since that [global optima for this problem are fibrous non branched topologies](https://doi.org/10.1016/j.ijheatmasstransfer.2018.01.114) with infinite complexity (which is rather intuitive, branching always increases thermal resistance as the shortest path to the heat sink is to not pass by a branch). However in terms of thermal performances, the sub-optimal topologies found by this code are very close to the global optimum. Due to their discrete aspect, they are moreover easier to fabricate. Anyway, I was beaten by people much more clever than me !
+
+## Aknowldegments
+
+Thanks to [Gilles marck](https://theses.hal.science/pastel-00819099/), wherever you are or whatever you do now, you've been a great source of inspiration for all these codes.
