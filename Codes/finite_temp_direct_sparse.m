@@ -2,7 +2,9 @@
 %https://github.com/Raphael-Boichot/Tree-network-structure-generation-for-heat-conduction-by-cellular-automaton
 %https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm
 %https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem
+%https://github.com/Raphael-Boichot/Progressive-evolutionary-structural-optimisation-algorithm
 function [distance,sum_of_entropy, entropy, border_variance,variance, mean_temperature,maximal_temperature,temp,grad,variance_grad]=finite_temp_direct_sparse(kp_k0,k0,heat_sink_temperature,delta_x,p_vol,boundary_conditions)
+
 [height,width,~]=size(boundary_conditions);
 temp=ones(height,width).*heat_sink_temperature;
 conductivity_table=zeros(height,width,5);
@@ -119,10 +121,10 @@ for i=1:1:height
 end
 
 maximal_temperature = max(max(temp));
-variance=std(std(temp))^2;
+variance=std(reshape(temp,[],1))^2;
 [gradX, gradY]=gradient(temp(2:end-1,2:end-1));
 grad=(gradX.^2+gradY.^2).^0.5;
-variance_grad=std(std(grad))^2;
+variance_grad=std(reshape(grad,[],1))^2;
 mean_temperature=mean(mean(temp));
 border_variance=std([temp(2:end-1,2)' temp(2,2:end-1)]);
 
