@@ -33,13 +33,13 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 ## Code output during convergence
 ![code output](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Code_Output.png)
 
-## Various shapes at convergence for kp/k0=10
+## Various shapes at convergence for kp/k0=10, max temperature minimization
 ![converged shapes](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Converged_shapes.png)
 
-## Exemple of convergence with kp/k0=10 and filling ratio = 0.3, 100 steps per frame (grayscales are NOT compression artifacts but an average of topologies alive at a given epoch)
+## Exemple of convergence with kp/k0=10 and filling ratio = 0.3, 100 steps per frame (grayscales are NOT compression artifacts but an average of topologies alive at a given epoch), max temperature minimization
 ![](Pictures/GA_output.gif)
 
-## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm)
+## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), max temperature minimization
 ![](Pictures/Animation.gif). 
 
 Adding extra steps of ESO algorithm after the GA algorithm improves the thermal efficiency (decreases the thermal resistance) of only about 1% despite noticable topology differences. This indicates that the objective function is rather flat regarding the influence of the topology near the global optimum.
