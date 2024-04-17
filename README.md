@@ -39,7 +39,7 @@ Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intu
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.3, 100 steps per frame, max temperature minimization
 ![](Pictures/GA_output.gif)
 
-Note that grayscales are NOT compression artifacts but an average of topologies alive at a given epoch.
+Note that grayscales are NOT compression artifacts but an average of the 1000 topologies "alive" at a given epoch.
 
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), max temperature minimization
 ![](Pictures/Animation.gif). 
@@ -52,7 +52,7 @@ Adding extra steps of ESO algorithm after the GA algorithm improves the thermal 
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), minimization of the standard deviation of entropy generation rate
 ![](Pictures/Animation_2.gif). 
 
-Despite being quite fancy, this objective function has no technical purpose to my knowledge. But Science can be beautiful.
+Despite being quite fancy, this objective function has no technical purpose to my knowledge. But Science must be beautiful.
 
 ## Epilogue
 
