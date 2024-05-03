@@ -27,6 +27,8 @@ The code can natively minimize (amond 10 choices):
 
 Proof by the absurd shows that (2) and (6) are strictly equivalent. Counter intuitively, minimizing entropy (3) over the domain gives very poorly performing shapes as the definition of entropy favored high temperatures to decrease entropy. Objective functions (4) and (5) gives very artistic shapes. The codes also leads to non intuitive (but optimal) situations where the conductive matter is repulsed from the heatsink if it is not conductive enough.
 
+The code provides the case where the conductive matter does not has a power source, so the topology would physically represent a conductive tree sunk into an heating volume rather than stuck on a heating surface. Anyway, it is just a matter of changing few lines of codes to move from one configuration to another (topologies being very similar at the end).
+
 ## Test case
 ![test case](https://github.com/Raphael-Boichot/A-genetic-algorithm-for-topology-optimization-of-area-to-point-heat-conduction-problem/blob/main/Pictures/Test_case.png)
 
@@ -53,6 +55,14 @@ Adding extra steps of ESO algorithm after the GA algorithm improves the thermal 
 ![](Pictures/Animation_2.gif). 
 
 Despite being quite fancy, this objective function has no technical purpose to my knowledge. But Science must be beautiful.
+
+## Exemple of convergence with kp/k0=10 and filling ratio = 0.3, 100 steps per frame, minimization of the sum of thermal gradients
+![](Pictures/GA_output_3.gif)
+
+## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), minimization of the sum of thermal gradients
+![](Pictures/Animation_2.gif). 
+
+This objective function can be used to minimize thermal stress in multi-materials components for example.
 
 ## Epilogue
 
