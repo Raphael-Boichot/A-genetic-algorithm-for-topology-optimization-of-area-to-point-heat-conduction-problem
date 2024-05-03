@@ -60,7 +60,7 @@ Despite being quite fancy, this objective function has no technical purpose to m
 ![](Pictures/GA_output_3.gif)
 
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), minimization of the sum of thermal gradients
-![](Pictures/Animation_2.gif). 
+![](Pictures/Animation_3.gif). 
 
 This objective function can be used to minimize thermal stress in multi-materials components for example.
 
