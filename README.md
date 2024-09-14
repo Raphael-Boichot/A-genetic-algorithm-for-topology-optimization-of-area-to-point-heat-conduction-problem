@@ -70,7 +70,7 @@ It has been proven by some brilliant team since that [global optima for this pro
 
 ## Funfact
 
-The paper was butchered by the editor (I would say "as always"), so the pdf of the repo which is the preprint is more accurate thah the published version on the journal site.
+The paper was butchered by the editor (I would say "as always with Elsevier"), so the pdf of the repo which is the preprint is more accurate thah the published version on the journal site.
 
 ## Aknowldegments
 
