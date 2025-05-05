@@ -20,9 +20,9 @@ starting_image='150x150.bmp';     %self explanatory
 %Believe me, they are efficient for tackling this problem
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
-nb_generations=10000;           %number of epochs
-prob_crossover=0.01;            %crossover probability at each cell (constant with epoch)
-prob_mutation_max=0.02;         %mutation probability at each cell (decrases with epoch, see code)
+%nb_generations=10000;           %number of epochs
+prob_crossover=0.001;           %crossover probability at each cell (constant with epoch)
+prob_mutation_max=0.025;        %mutation probability at each cell (decrases with epoch, see code)
 cycle_period=200;               %periodicity in cycles for mutation rate
 convergence_criterion=200;      %after n steps without better configuration, code stops
 %--------------------------------------------------------------------------
@@ -67,7 +67,7 @@ end
 population=zeros(height, width,population_size);
 conductive_pixels=ceil(non_conductive_pixels*filling_ratio);
 checksum=conductive_pixels;
-topology_history=zeros(height, width, nb_generations);
+%topology_history=zeros(height, width, nb_generations);
 
 %Check is a preceding session was crashed and reload it
 if isfile('Current_state.mat')
