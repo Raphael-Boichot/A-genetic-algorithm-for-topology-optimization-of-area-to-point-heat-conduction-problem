@@ -14,22 +14,24 @@ p=1e6;                          %surface of volume power density
 delta_x=0.001;                  %size of x/y square cells
 Heat_sink_temperature=298;      %self explanatory
 filling_ratio=0.3;              %ratio of conductive matter on the surface
-starting_image='100x100.bmp';    %self explanatory   
+starting_image='150x150.bmp';     %self explanatory   
 %--------Hyper parameters for genetic algorithm----------------------------
 %hyper parameters have been optimized with blood, sweat, and tears
 %Believe me, they are efficient for tackling this problem
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
 nb_generations=10000;           %number of epochs
-prob_crossover=0.2;             %crossover probability at each cell (constant with epoch)
-prob_mutation_max=0.1;          %mutation probability at each cell (decrases with epoch, see code)
+prob_crossover=0.01;            %crossover probability at each cell (constant with epoch)
+prob_mutation_max=0.02;         %mutation probability at each cell (decrases with epoch, see code)
+cycle_period=200;               %periodicity in cycles for mutation rate
+convergence_criterion=200;      %after n steps without better configuration, code stops
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
 mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
-figure('Position',[100 100 1200 600]);
+figure('Position',[100 100 1300 600]);
 
 T_comp=0;
 table=zeros(population_size,2);
@@ -88,10 +90,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Main loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for g=m:1:nb_generations
+g=m;
+convergence_counter=0;
+while convergence_counter<convergence_criterion
 
     %Mutation rate is decreased with epoch following an empirical law that works well on this problem
-    prob_mutation=prob_mutation_max*exp(-5.8*g/nb_generations);
+    prob_mutation=0.5*prob_mutation_max*cos(2*g*pi/cycle_period)+0.5*prob_mutation_max;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %output to console
@@ -139,8 +143,10 @@ for g=m:1:nb_generations
     if (g>1)
         if (fitness(1,g)==fitness(1,g-1))
             disp('---------No better configuration detected---------')
+            convergence_counter=convergence_counter+1;
         else
             disp('>>>>>>>>>Better configuration detected<<<<<<<<<<<<')
+            convergence_counter=0;
         end
     end
 
@@ -247,7 +253,7 @@ for g=m:1:nb_generations
     title('Objective function');
 
     disp(['Maximal temperature: ',num2str(t_max)])
-
+    disp(['Convergence: ',num2str(round(100*convergence_counter/convergence_criterion)),'%'])
     P_1(g,1)=opti_p_crois;
     P_1(g,2)=opti_p_mut;
     P_1(g,3)=prob_mutation;
@@ -285,6 +291,7 @@ for g=m:1:nb_generations
         disp('Saving current memory state...');
         save Current_state.mat
     end
+    g=g+1;
     toc
 end
-
+disp('Shape convergence !')
