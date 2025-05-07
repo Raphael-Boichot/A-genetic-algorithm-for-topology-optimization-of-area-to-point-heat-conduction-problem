@@ -14,7 +14,7 @@ p=1e6;                          %surface of volume power density
 delta_x=0.001;                  %size of x/y square cells
 Heat_sink_temperature=298;      %self explanatory
 filling_ratio=0.3;              %ratio of conductive matter on the surface
-starting_image='71x71_spicy.bmp';
+starting_image='50x100_spicy.bmp';
 %--------Hyper parameters for genetic algorithm----------------------------
 %hyper parameters have been optimized with blood, sweat, and tears
 %Believe me, they are efficient for tackling this problem
@@ -29,7 +29,7 @@ rng('shuffle', 'twister')
 mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
-figure('Position',[100 100 1300 600]);
+figure('Position',[100 100 1300 1000]);
 
 T_comp=0;
 table=zeros(population_size,2);
@@ -213,22 +213,22 @@ while convergence_counter<convergence_criterion
     best_image=uint8(best_image);
     mean_topology=uint8(mean_topology);
     miroir_best=fliplr(best_image(1:height-1,1:width-1,:));
-    miroir_best2=rot90(miroir_best);
+    miroir_best2=best_image(1:height-1,1:width-1,:);
     miroir_mean=fliplr(mean_topology(1:height-1,1:width-1,:));
-    miroir_mean2=rot90(miroir_mean);
+    miroir_mean2=mean_topology(1:height-1,1:width-1,:);
 
     if g==1
-        imwrite([[miroir_best2,miroir_best];rot90(rot90([miroir_best2,miroir_best]))],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+        imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
     end
     if (g>1)
         if not(sum(abs(sum(topology_history(:,:,g)-topology_history(:,:,g-1)))))==0
-            imwrite([[miroir_best2,miroir_best];rot90(rot90([miroir_best2,miroir_best]))],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+            imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
         end
     end
 
     imwrite(best_image,'Best_topology.png');
     imwrite(mean_topology,'Average_topology.png');
-    imwrite([[miroir_mean2,miroir_mean];rot90(rot90([miroir_mean2,miroir_mean]))],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
+    imwrite([miroir_mean2,miroir_mean],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
 
     if g==2
         norme_iteration_1=fitness(1,1)-fitness(1,2);

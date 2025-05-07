@@ -14,31 +14,29 @@ p=1e6;                          %surface of volume power density
 delta_x=0.001;                  %size of x/y square cells
 Heat_sink_temperature=298;      %self explanatory
 filling_ratio=0.3;              %ratio of conductive matter on the surface
-starting_image='71x71_spicy.bmp';
+starting_image='50x100.bmp';    %self explanatory   
 %--------Hyper parameters for genetic algorithm----------------------------
 %hyper parameters have been optimized with blood, sweat, and tears
 %Believe me, they are efficient for tackling this problem
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
-split_crossover=5;              %Image will be splitted split_crossover times in average during crossover (constant with epoch)
-prob_mutation_max=0.05;         %mutation probability at each cell (decrases with epoch, see code)
-convergence_criterion=500;      %after n steps without better configuration, code stops
+nb_generations=10000;           %number of epochs
+prob_crossover=0.2;             %crossover probability at each cell (constant with epoch)
+prob_mutation_max=0.1;          %mutation probability at each cell (decrases with epoch, see code)
 %--------------------------------------------------------------------------
 
 rng('shuffle', 'twister')
 mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
-figure('Position',[100 100 1300 600]);
+figure('Position',[100 100 900 800]);
 
 T_comp=0;
 table=zeros(population_size,2);
 pixels=imread(starting_image);
 [height,width,layers]=size(pixels);
-prob_crossover=split_crossover/(height*width);
 Initial_boundary_limits=zeros(height,width);
 non_conductive_pixels=0;
-yet_conductive_pixels=0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Image translation into boundary limits
@@ -54,10 +52,6 @@ for k = 1:1:height
         if (red == 0) && (green == 0) && (blue == 255)
             Initial_boundary_limits(k,l)=-3;
         end
-        if (red == 0) && (green == 0) && (blue == 0)
-            Initial_boundary_limits(k,l)=k0*kp_k0;
-            yet_conductive_pixels=yet_conductive_pixels+1;
-        end
         if (red == 255) && (green == 255) && (blue == 255)
             Initial_boundary_limits(k,l)=k0;
             non_conductive_pixels=non_conductive_pixels+1;
@@ -69,9 +63,9 @@ end
 %initial population creation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 population=zeros(height, width,population_size);
-conductive_pixels=ceil((non_conductive_pixels+yet_conductive_pixels)*filling_ratio);
+conductive_pixels=ceil(non_conductive_pixels*filling_ratio);
 checksum=conductive_pixels;
-%topology_history=zeros(height, width, nb_generations);
+topology_history=zeros(height, width, nb_generations);
 
 %Check is a preceding session was crashed and reload it
 if isfile('Current_state.mat')
@@ -85,7 +79,7 @@ else
     delete('Best_topology/*.png');
     delete('Average_topology/*.png');
     parfor i=1:population_size
-        population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, yet_conductive_pixels, k0, kp_k0);
+        population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, k0, kp_k0);
     end
     m=1;
 end
@@ -94,12 +88,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Main loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-g=m;
-convergence_counter=0;
-while convergence_counter<convergence_criterion
+for g=m:1:nb_generations
 
     %Mutation rate is decreased with epoch following an empirical law that works well on this problem
-    prob_mutation=prob_mutation_max*exp(-5*g/10000);
+    prob_mutation=prob_mutation_max*exp(-5.8*g/nb_generations);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %output to console
@@ -110,12 +102,12 @@ while convergence_counter<convergence_criterion
     disp(['Checksum: ',num2str(checksum-conductive_pixels),' (must be 0)']);
     disp(['Current maximal mutation probability: ', num2str(prob_mutation)]);
     disp('Calculating fitness for each individual...');
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %evaluate the fitness / choose objective function
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     parfor i=1:population_size
-        % Variables output in this order :
+        % Variables output in this order : 
         % 1. Distance of the hotest cell to the heat sink (scalar)
         % 2. Sum of cell entropy (scalar)
         % 3. Entropy map (matrix)
@@ -147,10 +139,8 @@ while convergence_counter<convergence_criterion
     if (g>1)
         if (fitness(1,g)==fitness(1,g-1))
             disp('---------No better configuration detected---------')
-            convergence_counter=convergence_counter+1;
         else
             disp('>>>>>>>>>Better configuration detected<<<<<<<<<<<<')
-            convergence_counter=0;
         end
     end
 
@@ -212,23 +202,23 @@ while convergence_counter<convergence_criterion
 
     best_image=uint8(best_image);
     mean_topology=uint8(mean_topology);
-    miroir_best=fliplr(best_image(1:height-1,1:width-1,:));
-    miroir_best2=rot90(miroir_best);
-    miroir_mean=fliplr(mean_topology(1:height-1,1:width-1,:));
-    miroir_mean2=rot90(miroir_mean);
+    miroir_best=fliplr(best_image(1:height,1:width-1,:));
+    miroir_best2=fliplr(miroir_best);
+    miroir_mean=fliplr(mean_topology(1:height,1:width-1,:));
+    miroir_mean2=fliplr(miroir_mean);
 
     if g==1
-        imwrite([[miroir_best2,miroir_best];rot90(rot90([miroir_best2,miroir_best]))],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+        imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
     end
     if (g>1)
         if not(sum(abs(sum(topology_history(:,:,g)-topology_history(:,:,g-1)))))==0
-            imwrite([[miroir_best2,miroir_best];rot90(rot90([miroir_best2,miroir_best]))],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
+            imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
         end
     end
 
-    imwrite(best_image,'Best_topology.png');
-    imwrite(mean_topology,'Average_topology.png');
-    imwrite([[miroir_mean2,miroir_mean];rot90(rot90([miroir_mean2,miroir_mean]))],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
+    imwrite([miroir_best2,miroir_best],'Best_topology.png');
+    imwrite([miroir_mean2,miroir_mean],'Average_topology.png');
+    imwrite([miroir_mean2,miroir_mean],['Average_topology\Average_topology_',num2str(g,'%06.f'),'.png']);
 
     if g==2
         norme_iteration_1=fitness(1,1)-fitness(1,2);
@@ -257,7 +247,7 @@ while convergence_counter<convergence_criterion
     title('Objective function');
 
     disp(['Maximal temperature: ',num2str(t_max)])
-    disp(['Epochs without change: ',num2str(convergence_counter),'/',num2str(convergence_criterion), ' to convergence'])
+
     P_1(g,1)=opti_p_crois;
     P_1(g,2)=opti_p_mut;
     P_1(g,3)=prob_mutation;
@@ -295,7 +285,6 @@ while convergence_counter<convergence_criterion
         disp('Saving current memory state...');
         save Current_state.mat
     end
-    g=g+1;
     toc
 end
-disp('Shape convergence !')
+
