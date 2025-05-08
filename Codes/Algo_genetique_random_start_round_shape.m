@@ -99,7 +99,7 @@ convergence_counter=0;
 while convergence_counter<convergence_criterion
 
     %Mutation rate is decreased with epoch following an empirical law that works well on this problem
-    prob_mutation=prob_mutation_max*exp(-5*g/10000);
+    prob_mutation=max(prob_mutation_max*exp(-5*g/10000),1/(height*width));
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %output to console
