@@ -14,14 +14,14 @@ p=1e6;                          %surface of volume power density
 delta_x=0.001;                  %size of x/y square cells
 Heat_sink_temperature=298;      %self explanatory
 filling_ratio=0.3;              %ratio of conductive matter on the surface
-starting_image='71x71_spicy.bmp';
+starting_image='71x71.bmp';
 %--------Hyper parameters for genetic algorithm----------------------------
 %hyper parameters have been optimized with blood, sweat, and tears
 %Believe me, they are efficient for tackling this problem
 population_size=1000;           %size of the topology dataset
 population_best=200;            %rank of the last topology allowed to survive
 split_crossover=5;              %Image will be splitted split_crossover times in average during crossover (constant with epoch)
-prob_mutation_max=0.05;         %mutation probability at each cell (decrases with epoch, see code)
+prob_mutation_max=0.1;          %mutation probability at each cell (decrases with epoch, see code)
 convergence_criterion=500;      %after n steps without better configuration, code stops
 %--------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ convergence_counter=0;
 while convergence_counter<convergence_criterion
 
     %Mutation rate is decreased with epoch following an empirical law that works well on this problem
-    prob_mutation=max(prob_mutation_max*exp(-5*g/10000),1/(height*width));
+    prob_mutation=prob_mutation_max*exp(-5*g/10000);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %output to console
@@ -108,7 +108,7 @@ while convergence_counter<convergence_criterion
     disp(' ');
     disp(['---------Epoch: ',num2str(g),'---------']);
     disp(['Checksum: ',num2str(checksum-conductive_pixels),' (must be 0)']);
-    disp(['Current maximal mutation probability: ', num2str(prob_mutation)]);
+    disp(['Current maximal mutation allowed: ', num2str(round(max(prob_mutation*width*height,1))), ' cells']);
     disp('Calculating fitness for each individual...');
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,10 +237,10 @@ while convergence_counter<convergence_criterion
     if g>1
         residuals(1,g-1) = (fitness(1,g-1)-fitness(1,g))/norme_iteration_1;
         subplot(2,4,1);
-        plot(log10(residuals), '.r');
+        loglog(residuals, '.r');
         title('Residuals');
         xlabel('Generation');
-        ylabel('log10 value');
+        ylabel('value');
     end
 
     subplot(2,4,2);
@@ -258,8 +258,19 @@ while convergence_counter<convergence_criterion
 
     disp(['Maximal temperature: ',num2str(t_max)])
     disp(['Epochs without change: ',num2str(convergence_counter),'/',num2str(convergence_criterion), ' to convergence'])
-    P_1(g,1)=opti_p_crois;
-    P_1(g,2)=opti_p_mut;
+
+    if not(opti_p_crois==0)
+        P_1(g,1)=opti_p_crois;
+    else
+        P_1(g,1)=Inf;
+    end
+
+    if not(opti_p_mut==0)
+        P_1(g,2)=max(opti_p_mut,1/(height*width));
+    else
+        P_1(g,2)=Inf;
+    end
+
     P_1(g,3)=prob_mutation;
 
     subplot(2,4,5);
@@ -269,11 +280,11 @@ while convergence_counter<convergence_criterion
     ylabel('Value');
 
     subplot(2,4,6);
-    plot(log10(P_1(:,2)), '.b')
+    semilogy(P_1(:,2), '.b')
     hold on
-    plot(log10(P_1(:,3)), '.r');
+    semilogy(P_1(:,3), '.r');
     hold off
-    title('log10 mutation rate');
+    title('Mutation rate');
     xlabel('Generation');
 
     subplot(2,4,7);
