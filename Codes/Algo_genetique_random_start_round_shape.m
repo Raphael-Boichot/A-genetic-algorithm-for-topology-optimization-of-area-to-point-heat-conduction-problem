@@ -275,7 +275,7 @@ while convergence_counter<convergence_criterion
 
     subplot(2,4,5);
     plot(P_1(:,1), '.b');
-    title('Crossover rate');
+    title('Last good cross. rate');
     xlabel('Generation');
     ylabel('Value');
 
@@ -284,7 +284,7 @@ while convergence_counter<convergence_criterion
     hold on
     semilogy(P_1(:,3), '.r');
     hold off
-    title('Mutation rate');
+    title('Last good mutation rate');
     xlabel('Generation');
 
     subplot(2,4,7);
