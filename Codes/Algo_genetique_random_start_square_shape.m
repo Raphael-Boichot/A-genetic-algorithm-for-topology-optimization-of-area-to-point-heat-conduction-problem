@@ -212,10 +212,10 @@ while convergence_counter<convergence_criterion
 
     best_image=uint8(best_image);
     mean_topology=uint8(mean_topology);
-    miroir_best=fliplr(best_image(1:height-1,1:width-1,:));
-    miroir_best2=best_image(1:height-1,1:width-1,:);
-    miroir_mean=fliplr(mean_topology(1:height-1,1:width-1,:));
-    miroir_mean2=mean_topology(1:height-1,1:width-1,:);
+    miroir_best=fliplr(best_image(1:height,1:width-1,:));
+    miroir_best2=best_image(1:height,1:width-1,:);
+    miroir_mean=fliplr(mean_topology(1:height,1:width-1,:));
+    miroir_mean2=mean_topology(1:height,1:width-1,:);
 
     if g==1
         imwrite([miroir_best2,miroir_best],['Best_topology\Best_topology_',num2str(g,'%06.f'),'.png']);
