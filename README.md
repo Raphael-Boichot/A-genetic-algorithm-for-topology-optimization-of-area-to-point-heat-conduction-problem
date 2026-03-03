@@ -70,6 +70,12 @@ This objective function can be used to minimize thermal stress in multi-material
 ## Exemple of convergence with kp/k0=10 and filling ratio = 0.7 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), max temperature minimization
 ![](Pictures/Animation_4.gif). 
 
+## Exemple of convergence with kp/k0=100 and filling ratio = 0.3, 60 steps per frame, max temperature minimization
+![](Pictures/GA_output_5.gif)
+
+## Exemple of convergence with kp/k0=100 and filling ratio = 0.3 before and after extra refining with an [ESO algorithm](https://github.com/Raphael-Boichot/Evolutionary-structural-optimisation-algorithm), max temperature minimization
+![](Pictures/Animation_5.gif)
+
 In this case, just one fourth of the domain is solved, then rotated to form a circle. The GA and GA+ESO topologies have less than 0.2% difference in thermal resistance, to shw how probably flat is the real global minimum of the problem. Also remind that branches are **always** sub-optimal solutions (local minima).
 
 ## Epilogue
