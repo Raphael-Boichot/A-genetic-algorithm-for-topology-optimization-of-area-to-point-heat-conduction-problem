@@ -23,16 +23,22 @@ population_best=200;            %rank of the last topology allowed to survive
 split_crossover=5;              %Image will be splitted split_crossover times in average during crossover (constant with epoch)
 prob_mutation_max=0.1;          %mutation probability at each cell (decrases with epoch, see code)
 convergence_criterion=500;      %after n steps without better configuration, code stops
+MC_pre_run=25;                  %at first step, multiplier for the initial population in order to perform Monte-Carlo seach
+reload=0;                       %1=start from backup if any
 %--------------------------------------------------------------------------
+
+if reload==0
+    delete('Current_state.mat');%ease of life modification
+end
 
 rng('shuffle', 'twister')
 mkdir('Figure');
 mkdir('Best_topology');
 mkdir('Average_topology');
-figure('Position',[100 100 1300 600]);
+figure('Position',[100 100 1200 600]);
 
 T_comp=0;
-table=zeros(population_size,2);
+table=zeros(population_size*MC_pre_run,2);
 pixels=imread(starting_image);
 [height,width,layers]=size(pixels);
 prob_crossover=split_crossover/(height*width);
@@ -84,7 +90,7 @@ else
     delete('Figure/*.png');
     delete('Best_topology/*.png');
     delete('Average_topology/*.png');
-    parfor i=1:population_size
+    parfor i=1:population_size*MC_pre_run
         population(:,:,i)=init_image(Initial_boundary_limits,conductive_pixels, yet_conductive_pixels, k0, kp_k0);
     end
     m=1;
@@ -114,7 +120,16 @@ while convergence_counter<convergence_criterion
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %evaluate the fitness / choose objective function
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    parfor i=1:population_size
+    %After initial Monte-Carlo, back to normal
+    if g>1
+        MC_pre_run=1;
+        table=table(1:population_size,:);
+        fitness=fitness(1:population_size,:);
+    else
+        disp('Starting with a pinch of Monte Carlo, this may take a while...')
+    end
+    
+    parfor i=1:population_size*MC_pre_run
         % Variables output in this order :
         % 1. Distance of the hotest cell to the heat sink (scalar)
         % 2. Sum of cell entropy (scalar)
@@ -134,7 +149,7 @@ while convergence_counter<convergence_criterion
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %get the best topology
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    temp_temp=[(1:1:population_size)',fitness(:,g)];
+    temp_temp=[(1:1:population_size*MC_pre_run)',fitness(:,g)];
     pop_classe=sortrows(temp_temp, 2);
     indice=pop_classe(1:population_best,1);
     opti_p_crois=table(indice(1),1);
