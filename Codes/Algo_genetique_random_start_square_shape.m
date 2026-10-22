@@ -76,7 +76,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %initial population creation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-population=zeros(height, width,population_size);
+population=zeros(height, width,population_size*MC_pre_run);
 conductive_pixels=ceil((non_conductive_pixels+yet_conductive_pixels)*filling_ratio);
 checksum=conductive_pixels;
 %topology_history=zeros(height, width, nb_generations);
